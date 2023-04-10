@@ -10,15 +10,30 @@
        [0,1,0],
        [0,0,1]
        ];
+    
+    function init() {
+      let board = document.getElementById("board");
+      minefield.forEach(row => {
+        row.forEach(cell => {
+          let button=document.createElement("button");
+          let text=document.createTextNode("?");
+          button.appendChild(text);
+          board.appendChild(button);
+        });
+        let br=document.createElement("br");
+        board.appendChild(br);
+      });
+    }
+
 
    </script>
   </head>
-  <body>
+  <body onload="init()">
     <h1>
       Minesweeper
     </h1>
-    <button>?</button>
-    <button>?</button>
-    <button>?</button>
-  </body>
+    <div id="board">
+
+    </div>
+   </body>
 </html>
