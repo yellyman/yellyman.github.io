@@ -8,13 +8,11 @@
      /*
      att göra: större minfält, slumpmässig "minefield", hantera klick, flytta till mitten,
      */
-       [0,0,1]
-       ];
+     let minefield = createBoard(10, 10);
     
     function init() {
       let board = document.getElementById("board");
-      minefield.forEach(row => {
-        row.forEach(cell => {
+      minefield.forEach((row, rowIndex) => {
         row.forEach((cell, cellIndex) => {
           let button=document.createElement("button");
           let text=document.createTextNode("?");
