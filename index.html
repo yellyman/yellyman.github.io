@@ -8,9 +8,6 @@
      /*
      att göra: större minfält, slumpmässig "minefield", hantera klick, flytta till mitten,
      */
-     let minefield=[
-       [0,0,0],
-       [0,1,0],
        [0,0,1]
        ];
     
@@ -18,14 +15,52 @@
       let board = document.getElementById("board");
       minefield.forEach(row => {
         row.forEach(cell => {
+        row.forEach((cell, cellIndex) => {
           let button=document.createElement("button");
           let text=document.createTextNode("?");
           button.appendChild(text);
+          button.addEventListener("click", (event) => handleClick(rowIndex, cellIndex, cell, event))
           board.appendChild(button);
         });
         let br=document.createElement("br");
         board.appendChild(br);
       });
+    }
+
+    function createBoard(width, height) {
+       let minefield = [];
+       for (row=0; row<height; row++) {
+        let newRow = [];
+        for (cell=0; cell<width; cell++) {
+          newRow.push(getCellValue());
+        }   
+        minefield.push(newRow);
+       }
+       console.log(minefield);
+       return minefield;
+    }
+
+    function handleClick(row, cell, value, event) {
+      if(value=="X") {
+        gameOver();
+      } else {
+        event.srcElement.textContent = value;
+      }
+    }
+
+    function getCellValue() {
+      const mineProbability=0.4;
+      let value=Math.random();
+      if (value<mineProbability) {
+        return "X";
+      } else {
+        return "0";
+      }
+    }
+    
+    function gameOver() {
+      alert("Game Over!");
+
     }
 
 
