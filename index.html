@@ -6,9 +6,10 @@
    </title>
    <script>
      /*
-     att göra: större minfält, slumpmässig "minefield", hantera klick, flytta till mitten,
+     att göra: flytta till mitten, inte fortsätta efter död, visa minan, 0 öppnar alla omkring, fixed nr of mines
      */
      let minefield = createBoard(10, 10);
+     minefield = surroundingMines(minefield);
     
     function init() {
       let board = document.getElementById("board");
@@ -36,6 +37,49 @@
        }
        console.log(minefield);
        return minefield;
+    }
+
+    function surroundingMines(minefield) {
+      let result = [];
+      let height = minefield.length;
+      for (row=0; row<height; row++) {
+        let newRow = [];
+        let width = minefield[row].length;
+        for (cell=0; cell<width; cell++) {
+          if (minefield[row][cell] != 'X') {
+            let previousRow = minefield[row-1];
+            let nw = n = ne = w = e = sw = s = se = 0;
+
+            if (previousRow != undefined) {
+              nw = previousRow[cell-1] || '0';
+              n = previousRow[cell] || '0';
+              ne = previousRow[cell+1] || '0';
+            }
+            
+            w = minefield[row][cell-1] || '0';
+            e = minefield[row][cell+1] || '0';
+            
+            let nextRow = minefield[row+1];
+            if (nextRow != undefined) {
+              sw = nextRow[cell-1] || '0';
+              s = nextRow[cell] || '0';
+              se = nextRow[cell+1] || '0';
+            } 
+            let mineString = nw + n + ne + w + e + sw + s + se;
+            // "0X000X0X"
+            mineString = mineString.replaceAll('0', '');
+            let mineSum = mineString.length;
+            newRow.push(mineSum);  
+          } else {
+            newRow.push('X');
+          }
+
+          
+        }   
+        result.push(newRow);
+       }
+       console.log(result);
+       return result;
     }
 
     function handleClick(row, cell, value, event) {
