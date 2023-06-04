@@ -6,24 +6,44 @@
    </title>
    <script>
      /*
-     att göra: flytta till mitten, inte fortsätta efter död, visa minan, 0 öppnar alla omkring, fixed nr of mines
+     ATT GÖRA: 
+      - flytta till mitten, 
+      - visa minan, 
+      - 0 öppnar alla omkring, 
+        - Oändligt antal revealSurrounding...
+        - Skriv om till funktion
+      - fixed nr of mines, 
+      - sätta flaggor, 
+      - visa när man är klar,
      */
-     let minefield = createBoard(10, 10);
-     minefield = surroundingMines(minefield);
     
+     let minefield; // Global variable
+
     function init() {
+      minefield = createBoard(10, 10);
+      minefield = surroundingMines(minefield);
       let board = document.getElementById("board");
       minefield.forEach((row, rowIndex) => {
         row.forEach((cell, cellIndex) => {
           let button=document.createElement("button");
+          button.setAttribute("id", rowIndex + "," + cellIndex);
           let text=document.createTextNode("?");
           button.appendChild(text);
-          button.addEventListener("click", (event) => handleClick(rowIndex, cellIndex, cell, event))
+          button.addEventListener("click", (event) => handleClick(rowIndex, cellIndex, cell))
           board.appendChild(button);
         });
         let br=document.createElement("br");
         board.appendChild(br);
       });
+    }
+    function restart() {
+      let board = document.getElementById("board");
+      board.remove();
+      let body = document.getElementsByTagName("body")[0];
+      let newBoard = document.createElement("div");
+      newBoard.setAttribute("id","board");
+      body.appendChild(newBoard);
+      init();
     }
 
     function createBoard(width, height) {
@@ -82,16 +102,66 @@
        return result;
     }
 
-    function handleClick(row, cell, value, event) {
+    function handleClick(row, cell, value) {
       if(value=="X") {
         gameOver();
       } else {
-        event.srcElement.textContent = value;
+        setButtonValue(row, cell, value);
+        if(value==0) {
+          revealSurrounding(row, cell);
+        }
+      }
+    }
+
+    function setButtonValue(row, cell, value) {
+      let buttonToUpdate = document.getElementById(row + "," + cell);
+      buttonToUpdate.textContent = value;
+    }
+
+    function revealSurrounding(row, cell) {
+      let e = minefield[row][cell+1];
+      if (e !== undefined) {
+        handleClick(row, cell+1, e);
+      }
+      
+      let w = minefield[row][cell-1];
+      if (w !== undefined) {
+        handleClick(row, cell-1, w);
+      }
+
+      let n = minefield[row-1][cell];
+      if (n !== undefined) {
+        handleClick(row-1, cell, n);
+      }
+
+      let s = minefield[row+1][cell];
+      if (s !== undefined) {
+        handleClick(row+1, cell, s);
+      }
+
+      let ne = minefield[row-1][cell+1];
+      if (ne !== undefined) {
+        handleClick(row-1, cell+1, ne);
+      }
+      
+      let nw = minefield[row-1][cell-1];
+      if (nw !== undefined) {
+        handleClick(row-1, cell-1, nw);
+      }
+
+      let se = minefield[row+1][cell+1];
+      if (se !== undefined) {
+        handleClick(row+1, cell+1, se);
+      }
+
+      let sw = minefield[row+1][cell-1];
+      if (sw !== undefined) {
+        handleClick(row+1, cell-1, sw);
       }
     }
 
     function getCellValue() {
-      const mineProbability=0.4;
+      const mineProbability=0.2;
       let value=Math.random();
       if (value<mineProbability) {
         return "X";
@@ -102,6 +172,7 @@
     
     function gameOver() {
       alert("Game Over!");
+      restart();
 
     }
 
